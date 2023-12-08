@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RickyAI3.0</title>
+</head>
+<body>
+    <h1>Ricky V3.0</h1>
+    <label for="userInput">User Input:</label>
+    <input type="text" id="userInput">
+    <button onclick="submitUserInput()">Submit</button>
+
+    <h2>Ricky:</h2>
+    <p id="aiResponse"></p>
+
+    <script>
+        // Simple AI with a basic learning mechanism
+        let knowledgeBase = {};
+
+        function submitUserInput() {
+            const userInput = document.getElementById('userInput').value.toLowerCase();
+            const aiResponseElement = document.getElementById('aiResponse');
+
+            // Check if the AI already knows the response
+            if (knowledgeBase.hasOwnProperty(userInput)) {
+                aiResponseElement.textContent = knowledgeBase[userInput];
+            } else {
+                // If the AI doesn't know the response, learn from the user
+                const userResponse = prompt('I do not know the answer. Please teach me. What should I say in response to "' + userInput + '"?');
+                
+                // Save the new response to the knowledge base
+                knowledgeBase[userInput] = userResponse;
+                
+                // Update the UI
+                aiResponseElement.textContent = userResponse;
+
+                // Save the knowledge base to a JSON file (simplified)
+                saveKnowledgeBase();
+            }
+        }
+
+        function saveKnowledgeBase() {
+            const knowledgeBaseJSON = JSON.stringify(knowledgeBase, null, 2);
+            // For simplicity, you can use the browser's localStorage to save the JSON data
+            localStorage.setItem('knowledgeBase', knowledgeBaseJSON);
+        }
+
+        // Load the knowledge base from localStorage on page load
+        window.onload = function() {
+            const savedKnowledgeBaseJSON = localStorage.getItem('knowledgeBase');
+            if (savedKnowledgeBaseJSON) {
+                knowledgeBase = JSON.parse(savedKnowledgeBaseJSON);
+            }
+        };
+    </script>
+</body>
+</html>
