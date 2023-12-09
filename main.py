@@ -34,7 +34,7 @@ while True:
     if user_input in bot_responses:
         response = bot_responses[user_input]
     else:
-        print("Bot: I don't know how to respond to that. Please provide a response. Type Yes if you would like to train a new response.")
+        print("RickyAITrainingNotification: I don't know how to respond to that. Please provide a response. Type Yes if you would like to train a new response.")
         response = input("You: ")
         bot_responses = train_bot(user_input, bot_responses)
         save_bot_data(bot_responses)
