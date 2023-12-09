@@ -5,10 +5,13 @@ const readline = require('readline');
 const json_data_path = "learning_bot_data.json";
 
 // Function to train the bot with user input
-function trainBot(inputText, responses) {
-    const response = readline.question(`Enter the response for '${inputText}': `);
-    responses[inputText] = response;
-    return responses;
+function trainBot(inputText, responses, rl) {
+    return new Promise((resolve) => {
+        rl.question(`Enter the response for '${inputText}': `, (response) => {
+            responses[inputText] = response;
+            resolve(responses);
+        });
+    });
 }
 
 // Function to save the trained data to a JSON file
@@ -30,30 +33,37 @@ function loadBotData() {
 // Load existing responses or start with an empty object
 let botResponses = loadBotData();
 
-// Chat with the bot
+// Create readline interface
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
 
-function chatWithBot() {
-    rl.question("You: ", (userInput) => {
+// Chat with the bot
+async function chatWithBot() {
+    while (true) {
+        const userInput = await getUserInput(rl, "You: ");
         if (userInput.toLowerCase() === 'exit' || userInput.toLowerCase() === 'stop') {
             rl.close();
+            break;
         } else if (userInput in botResponses) {
             const response = botResponses[userInput];
             console.log(`Ricky: ${response}`);
-            chatWithBot();
         } else {
             console.log("RickyAITrainingNotification: I don't know how to respond to that. Please provide a response. Type 'Yes' if you would like to train a new response.");
-            rl.question("You: ", (newResponse) => {
-                if (newResponse.toLowerCase() === 'yes') {
-                    botResponses = trainBot(userInput, botResponses);
-                    saveBotData(botResponses);
-                }
-                chatWithBot();
-            });
+            const newResponse = await getUserInput(rl, "You: ");
+            if (newResponse.toLowerCase() === 'yes') {
+                botResponses = await trainBot(userInput, botResponses, rl);
+                saveBotData(botResponses);
+            }
         }
+    }
+}
+
+// Function to get user input
+function getUserInput(rl, prompt) {
+    return new Promise((resolve) => {
+        rl.question(prompt, resolve);
     });
 }
 
