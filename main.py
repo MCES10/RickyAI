@@ -26,24 +26,17 @@ def load_bot_data():
 # Load existing responses or start with an empty dictionary
 bot_responses = load_bot_data()
 
-# Train the bot with user input
-user_input = "What is your name?"
-bot_responses = train_bot(user_input, bot_responses)
-
-# Save the trained data to a JSON file
-save_bot_data(bot_responses)
-
 # Chat with the bot
 while True:
     user_input = input("You: ")
-    if user_input.lower() == 'exit':
+    if user_input.lower() == 'exit' + 'stop':
         break
     if user_input in bot_responses:
         response = bot_responses[user_input]
     else:
-        print("Bot: I don't know how to respond to that. Please provide a response.")
+        print("Bot: I don't know how to respond to that. Please provide a response. Type Yes if you would like to train a new response.")
         response = input("You: ")
         bot_responses = train_bot(user_input, bot_responses)
         save_bot_data(bot_responses)
-
-    print("Bot:", response)
+       
+    print("Ricky:", response)
