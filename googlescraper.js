@@ -54,14 +54,17 @@ async function googleSearch(query, apiKey, cx) {
 let botResponses = loadBotData();
 
 // Google API key and custom search engine ID
-const googleApiKey = 'YOUR_GOOGLE_API_KEY';
-const googleCx = 'YOUR_GOOGLE_CX';
+const googleApiKey = 'AIzaSyAOll73Mr1n4FjdRKWP0hbNVO3hplCGoXM';
+const googleCx = '8007ac92de2d449f9';
+
 
 // Simple synchronous prompt function for the console
 function promptSync(question) {
     const readlineSync = require('readline-sync');
     return readlineSync.question(question);
 }
+
+
 
 // Chat with the bot
 while (true) {
@@ -74,11 +77,16 @@ while (true) {
         console.log(`Ricky: ${botResponses[userInput]}`);
     } else {
         console.log("RickyAITrainingNotification: I don't know how to respond to that.");
-        const response = await googleSearch(userInput, googleApiKey, googleCx);
-        console.log(`Ricky: ${response}`);
-        if (promptSync("Type 'Yes' if you would like to train a new response: ").toLowerCase() === 'yes') {
-            botResponses = trainBot(userInput, botResponses);
-            saveBotData(botResponses);
-        }
+        googleSearch(userInput, googleApiKey, googleCx)
+            .then(response => {
+                console.log(`Ricky: ${response}`);
+                if (promptSync("Type 'Yes' if you would like to train a new response: ").toLowerCase() === 'yes') {
+                    botResponses = trainBot(userInput, botResponses);
+                    saveBotData(botResponses);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }
 }
