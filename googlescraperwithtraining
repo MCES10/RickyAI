@@ -46,8 +46,8 @@ def google_search(query, api_key, cx):
 bot_responses = load_bot_data()
 
 # Google API key and custom search engine ID
-google_api_key = 'AIzaSyAOll73Mr1n4FjdRKWP0hbNVO3hplCGoXM'
-google_cx = '8007ac92de2d449f9'
+google_api_key = 'YOUR_GOOGLE_API_KEY'
+google_cx = 'YOUR_GOOGLE_CX'
 
 # Chat with the bot
 while True:
@@ -58,16 +58,12 @@ while True:
     if user_input in bot_responses:
         response = bot_responses[user_input]
     else:
-        print("RickyAIFramework: Searching Google")
+        print("RickyAITrainingNotification: I don't know how to respond to that.")
         response = google_search(user_input, google_api_key, google_cx)
         print(f"Ricky: {response}")
-        continue
+        if input("Type 'Yes' if you would like to train a new response: ").lower() == 'yes':
+            bot_responses = train_bot(user_input, bot_responses)
+            save_bot_data(bot_responses)
+            continue
 
     print(f"Ricky: {response}")
-
-# Replace 'YOUR_API_KEY' and 'YOUR_CX' with your actual API key and custom search engine ID
-api_key = 'AIzaSyAOll73Mr1n4FjdRKWP0hbNVO3hplCGoXM',
-cx = '8007ac92de2d449f9'
-
-
-
