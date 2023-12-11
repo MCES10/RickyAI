@@ -50,6 +50,7 @@ google_api_key = 'AIzaSyAOll73Mr1n4FjdRKWP0hbNVO3hplCGoXM'
 google_cx = '8007ac92de2d449f9'
 
 # Chat with the bot
+print("Welcome to RickyAI 3.1 Turbo Fly")
 while True:
     user_input = input("You: ")
     if user_input.lower() in ['exit', 'stop']:
