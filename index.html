@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RickyAI 3.1 Turbo Fly</title>
+  <title>GitHub Pages Console</title>
 </head>
 <body>
   <div id="console"></div>
+  <button id="runButton">Run main.js</button>
+
   <script>
     const consoleDiv = document.getElementById('console');
+    const runButton = document.getElementById('runButton');
 
     function appendMessage(message) {
       const p = document.createElement('p');
@@ -16,30 +19,19 @@
       consoleDiv.appendChild(p);
     }
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.addEventListener('keydown', async (event) => {
-        if (event.key === 'Enter') {
-          const command = input.value;
-          appendMessage(`You: ${command}`);
-          
-          if (command.toLowerCase() === 'run RickyAI3_1.js') {
-            // Dynamically load and execute the main.js file.
-            const response = await fetch('RickyAI3_1.js');
-            const scriptCode = await response.text();
-            const script = document.createElement('script');
-            script.textContent = scriptCode;
-            document.body.appendChild(script);
-          }
-
-          input.value = '';
-        }
-      });
-
-      consoleDiv.appendChild(input);
+    runButton.addEventListener('click', async () => {
+      // Dynamically load and execute the main.js file.
+      try {
+        const response = await fetch('RickyAI3_1.js');
+        const scriptCode = await response.text();
+        const script = document.createElement('script');
+        script.textContent = scriptCode;
+        document.body.appendChild(script);
+      } catch (error) {
+        console.error('Error loading RICKYAI.js:', error.message);
+        appendMessage('Error loading RICKYAI.js');
+      }
     });
   </script>
 </body>
 </html>
-
