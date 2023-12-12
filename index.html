@@ -65,56 +65,62 @@
     }
 
     async function sendMessage() {
-      const userInput = userInputField.value;
-      appendMessage(`You: ${userInput}`);
+  const userInput = userInputField.value;
+  appendMessage(`You: ${userInput}`);
 
-      if (userInput.toLowerCase() === 'exit' || userInput.toLowerCase() === 'stop') {
-        return;
+  if (userInput.toLowerCase() === 'exit' || userInput.toLowerCase() === 'stop') {
+    return;
+  }
+
+  if (userInput === 'What is the time' || userInput === 'give me the time' || userInput === 'What is the date' || userInput === 'give me date') {
+    const dateTimeObject = new Date();
+    appendMessage(`Date: ${dateTimeObject.toDateString()}`);
+    appendMessage(`Time: ${dateTimeObject.toTimeString()}`);
+    userInputField.value = '';
+    return;
+  }
+
+  let response;
+
+  // Check if the user input is already in botResponses
+  if (userInput in botResponses) {
+    response = botResponses[userInput];
+  } else {
+    console.log('RickyAIFramework: Searching Google');
+
+    try {
+      const query = userInput.toLowerCase(); // Convert user input to lowercase for comparison
+      const apiKey ='AIzaSyAOll73Mr1n4FjdRKWP0hbNVO3hplCGoXM';
+      const cx = '8007ac92de2d449f9';
+
+      const base_url = 'https://www.googleapis.com/customsearch/v1';
+      const params = {
+        q: query,
+        key: apiKey,
+        cx: cx,
+      };
+
+      const results = await fetch(`${base_url}?${new URLSearchParams(params)}`);
+      const data = await results.json();
+
+      if ('items' in data && data.items.length > 0) {
+        const topResult = data.items[0];
+        response = `Title: ${topResult.title}\nLink: ${topResult.link}\nSnippet: ${topResult.snippet || 'N/A'}`;
+      } else {
+        response = 'No results found on Google.';
       }
-
-      if (userInput === 'What is the time' || userInput === 'give me the time' || userInput === 'What is the date' || userInput === 'give me date') {
-        const dateTimeObject = new Date();
-        appendMessage(`Date: ${dateTimeObject.toDateString()}`);
-        appendMessage(`Time: ${dateTimeObject.toTimeString()}`);
-        userInputField.value = '';
-        return;
-      }
-
-      let response;
-      console.log('RickyAIFramework: Searching Google');
-
-      try {
-        const query = userInput.toLowerCase(); // Convert user input to lowercase for comparison
-        const apiKey ='AIzaSyAOll73Mr1n4FjdRKWP0hbNVO3hplCGoXM';
-        const cx = '8007ac92de2d449f9';
-
-        const base_url = 'https://www.googleapis.com/customsearch/v1';
-        const params = {
-          q: query,
-          key: apiKey,
-          cx: cx,
-        };
-
-        const results = await fetch(`${base_url}?${new URLSearchParams(params)}`);
-        const data = await results.json();
-
-        if ('items' in data && data.items.length > 0) {
-          const topResult = data.items[0];
-          response = `Title: ${topResult.title}\nLink: ${topResult.link}\nSnippet: ${topResult.snippet || 'N/A'}`;
-        } else {
-          response = 'No results found on Google.';
-        }
-      } catch (error) {
-        console.error('Error during Google search:', error.message);
-        response = 'Error during Google search.';
-      }
-
-      console.log(`Ricky: ${response}`);
-      appendMessage(`Ricky: ${response}`);
-      botResponses[userInput] = response;
-      await saveBotResponses();
-      userInputField.value = ''; // Clear the input field
+    } catch (error) {
+      console.error('Error during Google search:', error.message);
+      response = 'Error during Google search.';
     }
+  }
+
+  console.log(`Ricky: ${response}`);
+  appendMessage(`Ricky: ${response}`);
+  botResponses[userInput] = response;
+  await saveBotResponses();
+  userInputField.value = ''; // Clear the input field
+}
 
     init(); // Initialize the botResponses on page load
   </script>
