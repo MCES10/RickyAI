@@ -35,6 +35,28 @@
     const conversationDiv = document.getElementById('conversation');
     const userInputField = document.getElementById('userMessage');
 
+    let botResponses = {};
+
+    async function loadBotResponses() {
+      const response = await fetch('learning_bot_data.json');
+      botResponses = await response.json();
+    }
+
+    async function saveBotResponses() {
+      await fetch('learning_bot_data.json', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(botResponses),
+      });
+    }
+
+    async function init() {
+      await loadBotResponses();
+      console.log('Bot responses loaded:', botResponses);
+    }
+
     function appendMessage(message) {
       const p = document.createElement('p');
       p.textContent = message;
@@ -89,8 +111,12 @@
 
       console.log(`Ricky: ${response}`);
       appendMessage(`Ricky: ${response}`);
+      botResponses[userInput] = response;
+      await saveBotResponses();
       userInputField.value = ''; // Clear the input field
     }
+
+    init(); // Initialize the botResponses on page load
   </script>
 </body>
 </html>
