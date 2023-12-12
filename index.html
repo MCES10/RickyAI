@@ -37,7 +37,7 @@ body {
     <div id="loginform" hidden>
         <form>
             <div>
-                <h2 style="color:white">Login</h2>
+                <h2 style="color:white">Login With MCES10 Software Account</h2>
                 <input id="email" name="email" type = "email="user placeholder = "Email Address" name="user" placeholder="Email Address" style="border-radius: 5px;height:30px;font-size:14pt;" class="button button1" />
             </div>
             <div>
@@ -47,22 +47,27 @@ body {
           <p>
             <input type="submit" value="Login" style="border-radius: 5px;height:50px;font-size:14pt" class="button button1" /></p>
         </form>
-      <p style="color:white">To Sign Up you need the MCES10 Software Account Companion (M.S.A.C) or <a href="accountsignup.html" style="color:coral">Click Here to SignUp</a></p>
-      <p style="color:white">Forgot Your Password? <a href="passwordreset.html" style="color:coral">Click Here</a></p>
+      <p style="color:white">To Sign Up you need go to MCES10 Software<a href="mces10-software.github.io/apps/accountsignup.html" style="color:rgb(0, 0, 0)">Click Here to SignUp</a></p>
+      <p style="color:white">Forgot Your Password? <a href="mces10-software.github.io/apps/passwordreset.html" style="color:rgb(0, 0, 0)">Click Here</a></p>
 
     </div>
 
     <div id="loggedinuser" hidden>
         <div>
+            <center>
             <h1>Welcome to RickyAI 3.1 Turbo Fly</h1>
             <form id="userinfo">
                 <div id="conversation"></div>
                 <div id="userInput">
-                  <label for="userMessage">You:</label>
-                  <input type="text" id="userMessage" />
-                  <button onclick="sendMessage()">Send</button>
+                  <label for="userMessage">User:</label>
+                  <div class="button">
+                  <input style="border-radius: 5px;height:50px;font-size:14pt"   class="button button1"type="text" id="userMessage" />
                 </div>
-              
+                  <div class="button">
+                  <button onclick="sendMessage()"  tyle="border-radius: 5px;height:50px;font-size:14pt" class="button button1">Send</button>
+                </div>
+                </div>
+            </center>
                 <script>
                   const conversationDiv = document.getElementById('conversation');
                   const userInputField = document.getElementById('userMessage');
