@@ -54,17 +54,19 @@ body {
 
     <div id="loggedinuser" hidden>
         <div>
-            <center>
+            <p>
+                <button onclick="logout()" style="border-radius: 5px;height:50px;font-size:14pt" class="button button2">Logout</button>
+                </p>
+            
             <h1>Welcome to RickyAI 3.1 Turbo Fly</h1>
+            <center>
             <form id="userinfo">
                 <div id="conversation"></div>
                 <div id="userInput">
                   <label for="userMessage">User:</label>
                   <div class="button">
-                  <input style="border-radius: 5px;height:50px;font-size:14pt"   class="button button1"type="text" id="userMessage" />
-                </div>
-                  <div class="button">
-                  <button onclick="sendMessage()"  tyle="border-radius: 5px;height:50px;font-size:14pt" class="button button1">Send</button>
+                  <input style="border-radius: 5px;height:20px;font-size:14pt"   class="button button1"type="text" id="userMessage" />
+                  <button onclick="sendMessage()"  tyle="border-radius: 5px;height:20px;font-size:14pt" class="button button1">Send</button>
                 </div>
                 </div>
             </center>
@@ -166,9 +168,7 @@ body {
         </div>
 
         <br/>
-      <p>
-        <button onclick="logout()" style="border-radius: 5px;height:50px;font-size:14pt" class="button button2">Logout</button>
-        </p>
+      
     </div>
 
     <script>
