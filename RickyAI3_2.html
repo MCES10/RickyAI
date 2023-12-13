@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="style.css" rel="stylesheet" type="text/css">
+  <title>RickyAI 3.2</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    #conversation {
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 200px;
+      overflow-y: auto;
+    }
+
+    #userInput {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to RickyAI 3.2</h1>
+  <div id="conversation"></div>
+  <div id="userInput">
+    <label for="userMessage">You:</label>
+    <input type="text" id="userMessage" />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    const conversationDiv = document.getElementById('conversation');
+    const userInputField = document.getElementById('userMessage');
+
+    let botResponses = {};
+
+    async function loadBotResponses() {
+      const response = await fetch('learning_bot_data.json');
+      botResponses = await response.json();
+    }
+
+    async function saveBotResponses() {
+      await fetch('learning_bot_data.json', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(botResponses),
+      });
+    }
+
+    async function init() {
+      await loadBotResponses();
+      console.log('Bot responses loaded:', botResponses);
+    }
+
+    function appendMessage(message) {
+      const p = document.createElement('p');
+      p.textContent = message;
+      conversationDiv.appendChild(p);
+      conversationDiv.scrollTop = conversationDiv.scrollHeight; // Auto-scroll to the bottom
+    }
+
+    async function searchGoogle(query) {
+      console.log('RickyAIFramework: Searching Google');
+
+      try {
+        const apiKey = 'API_KEY'; // Replace with your Google API Key
+        const cx = 'SEARCH_ENGINE_ID'; // Replace with your Google Custom Search Engine ID
+
+        const base_url = 'https://www.googleapis.com/customsearch/v1';
+        const params = {
+          q: query,
+          key: apiKey,
+          cx: cx,
+        };
+
+        const results = await fetch(`${base_url}?${new URLSearchParams(params)}`);
+        const data = await results.json();
+
+        if ('items' in data && data.items.length > 0) {
+          const topResult = data.items[0];
+          return `Google Result:\nTitle: ${topResult.title}\nLink: ${topResult.link}\nSnippet: ${topResult.snippet || 'N/A'}`;
+        } else {
+          return 'No results found on Google.';
+        }
+      } catch (error) {
+        console.error('Error during Google search:', error.message);
+        return 'Error during Google search.';
+      }
+    }
+
+    async function searchDuckDuckGo(query) {
+      console.log('RickyAIFramework: Searching DuckDuckGo');
+
+      try {
+        const response = await fetch(`https://api.duckduckgo.com/?q=${query}&format=json`);
+        const data = await response.json();
+
+        if (data && data.Results && data.Results.length > 0) {
+          const topResult = data.Results[0];
+          return `DuckDuckGo Result:\nText: ${topResult.Text}\nLink: ${topResult.FirstURL}`;
+        } else {
+          return 'No results found on DuckDuckGo.';
+        }
+      } catch (error) {
+        console.error('Error during DuckDuckGo search:', error.message);
+        return 'Error during DuckDuckGo search.';
+      }
+    }
+
+    async function sendMessage() {
+      const userInput = userInputField.value;
+      appendMessage(`You: ${userInput}`);
+
+      if (userInput.toLowerCase() === 'exit' || userInput.toLowerCase() === 'stop') {
+        return;
+      }
+
+      if (userInput === 'What is the time' || userInput === 'give me the time' || userInput === 'What is the date' || userInput === 'give me date') {
+        const dateTimeObject = new Date();
+        appendMessage(`Date: ${dateTimeObject.toDateString()}`);
+        appendMessage(`Time: ${dateTimeObject.toTimeString()}`);
+        userInputField.value = '';
+        return;
+      }
+
+      let response;
+
+      // Check if the user input is already in botResponses
+      if (userInput in botResponses) {
+        response = botResponses[userInput];
+      } else {
+        // Perform Google search
+        response = await searchGoogle(userInput);
+        response = await searchDuckDuckGo(userInput);
+        // If no results found on Google, perform DuckDuckGo search
+        if (response === 'No results found on Google.') {
+          response = await searchDuckDuckGo(userInput);
+        }
+      }
+
+      console.log(`Ricky: ${response}`);
+      appendMessage(`Ricky: ${response}`);
+      botResponses[userInput] = response;
+      await saveBotResponses();
+      userInputField.value = ''; // Clear the input field
+    }
+
+    init(); // Initialize the botResponses on page load
+  </script>
+</body>
+</html>
