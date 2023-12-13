@@ -95,22 +95,25 @@
     }
 
     async function searchDuckDuckGo(query) {
-      console.log('RickyAIFramework: Searching DuckDuckGo');
+  console.log('RickyAIFramework: Searching DuckDuckGo');
 
-      try {
-        const response = await fetch(`https://api.duckduckgo.com/?q=${query}&format=json`);
-        const data = await response.json();
+  try {
+    const response = await fetch(`https://api.duckduckgo.com/?q=${query}&format=json`);
+    const data = await response.json();
 
-        if (data && data.AbstractText) {
-          return `DuckDuckGo Result:\nText: ${data.AbstractText}\nLink: ${data.AbstractURL}`;
-        } else {
-          return 'No results found on DuckDuckGo.';
-        }
-      } catch (error) {
-        console.error('Error during DuckDuckGo search:', error.message);
-        return 'Error during DuckDuckGo search.';
-      }
+    console.log('DuckDuckGo API Response:', data); // Add this line for debugging
+
+    // Adjust the logic based on the actual response structure
+    if (data && data.Abstract) {
+      return `DuckDuckGo Result:\nText: ${data.Abstract}\nLink: ${data.AbstractURL}`;
+    } else {
+      return 'No results found on DuckDuckGo.';
     }
+  } catch (error) {
+    console.error('Error during DuckDuckGo search:', error.message);
+    return 'Error during DuckDuckGo search.';
+  }
+}
 
     async function sendMessage() {
       const userInput = userInputField.value;
