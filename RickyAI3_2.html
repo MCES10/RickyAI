@@ -69,8 +69,8 @@
       console.log('RickyAIFramework: Searching Google');
 
       try {
-        const apiKey = 'API_KEY'; // Replace with your Google API Key
-        const cx = 'SEARCH_ENGINE_ID'; // Replace with your Google Custom Search Engine ID
+        const apiKey ='AIzaSyAOll73Mr1n4FjdRKWP0hbNVO3hplCGoXM';
+        const cx = '8007ac92de2d449f9';
 
         const base_url = 'https://www.googleapis.com/customsearch/v1';
         const params = {
@@ -129,20 +129,11 @@
         return;
       }
 
-      let response;
+      let googleResponse = await searchGoogle(userInput);
+      let duckDuckGoResponse = await searchDuckDuckGo(userInput);
 
-      // Check if the user input is already in botResponses
-      if (userInput in botResponses) {
-        response = botResponses[userInput];
-      } else {
-        // Perform Google search
-        response = await searchGoogle(userInput);
-        response = await searchDuckDuckGo(userInput);
-        // If no results found on Google, perform DuckDuckGo search
-        if (response === 'No results found on Google.') {
-          response = await searchDuckDuckGo(userInput);
-        }
-      }
+      // Combine the responses
+      let response = `${googleResponse}\n\n${duckDuckGoResponse}`;
 
       console.log(`Ricky: ${response}`);
       appendMessage(`Ricky: ${response}`);
